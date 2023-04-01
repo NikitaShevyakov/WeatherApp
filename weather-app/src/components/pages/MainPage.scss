@@ -1,0 +1,27 @@
+.weather{
+    &-title{
+        margin-bottom: 30px;
+    }
+
+    &-info{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 32px;
+    
+        &__descr{
+            display: flex;
+            flex-direction: column;
+        }
+    
+        &__location, &__temperature, &__descr {
+            margin: 10px 30px;
+        }
+    
+        &__pressure, &__humidity, &__wind{
+            display: flex;
+            flex-direction: column;
+            margin: 10px 30px;
+        }
+    }      
+}
