@@ -1,6 +1,6 @@
 import img from './error.gif'
 
-const ErrorMessage = () =>{
+const ErrorMessage = ({errorMsg = ''}) =>{
     const styles = {
         display: 'block',
         width: '250px',
@@ -8,9 +8,11 @@ const ErrorMessage = () =>{
         objectFit: 'contain',
         margin: '0 auto'
     }
-
     return (
-        <img style={styles} src={img} alt="Error"/>
+        <>
+            <img style={styles} src={img} alt="Error"/>        
+            {errorMsg && <p>{errorMsg}</p>}
+        </>
     )
 }
 

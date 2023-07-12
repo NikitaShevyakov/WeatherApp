@@ -1,36 +1,21 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom';
-import useWeatherService from '../../services/WeatherServices';
-import Spinner from '../spinner/Spinner';
-import ErrorMessage from '../errorMessage/ErrorMessage';
+import Spinner from '../components/spinner/Spinner';
+import Page404 from './404';
 
+import { useSelector, useDispatch } from "react-redux";
+import { getWeatherOneCall, setWeatherError } from '../redux/actions/actionCreator';
 import './WeatherInfoPage.scss'
 
 const WeatherInfoPage = () => {
     const {cityName} = useParams();
-    const [weather, setWeather] = useState({});
-    const [daily, setDaily] = useState([]);
-    const [hourly, setHourly] = useState([]);
-    const {loading, error, clearError, getWeatherByCityName, getWeatherOneCall} = useWeatherService();
+    const {weather, loading, error} = useSelector(state => state.weatherReducer || {});
+    const dispatch = useDispatch();
 
-    useEffect(() => {                  
-        updateCity();
+    useEffect(() => {
+        dispatch(setWeatherError(''));
+        dispatch(getWeatherOneCall(cityName));
     }, [cityName]);
-
-    const updateCity = () => {
-        clearError();
-        getWeatherByCityName(cityName)
-            .then(onLoaded);
-    }
-
-    const onLoaded = (weather) => {
-        setWeather(weather);       
-        getWeatherOneCall(weather.lat, weather.long)
-            .then((data) => {
-                setDaily(data.daily);
-                setHourly(data.hourly);
-            });
-    }
 
     const View = (props) => {
         const {weather, hourly, daily} = props.data;
@@ -46,10 +31,8 @@ const WeatherInfoPage = () => {
             <ul className='weather-info-single__time-items'>
                 {hourly.map( item => {
                     return <li key={item.hours} className='time-item'>
-                        <div className='time-item__time'>{item.hours}</div>
-                        <div className='time-item__img'>
-                            <img src={item.image} width="100px" height="100px" alt=""/>
-                        </div>
+                        <div className='time-item__time'>{item.hours}</div>                        
+                        <img className='time-item__img' src={item.image} alt=""/>                        
                         <div className='time-item__temp'>{item.temperature}</div>
                     </li>
                 })}
@@ -62,7 +45,7 @@ const WeatherInfoPage = () => {
                                 {item.date.dayOfWeek} {item.date.date}
                             </div>
                             <div className='item__img'>
-                                <img src={item.image} width="100px" height="100px" alt=""/>
+                                <img src={item.image} width="50px" height="50px" alt=""/>
                             </div>
                             <div className='item__temp-day'>Day: {item.temperature.day}</div>
                             <div className='item__temp-night'>Night: {item.temperature.night}</div>
@@ -83,9 +66,13 @@ const WeatherInfoPage = () => {
         )
     }
 
-    const errorMessage = error ? <ErrorMessage/> : null;
+    const errorMessage = error ? <Page404/> : null;
     const spinner = loading ? <Spinner/> : null;
-    const content = !(loading || error) ? <View data={{weather, hourly, daily}}/> : null;
+    const content = !(loading || error) && weather.current != null? <View data={{
+        weather: weather.current,
+        hourly: weather.hourly,
+        daily: weather.daily
+    }}/> : null;
     
     return (
         <>
