@@ -37,11 +37,14 @@ const WeatherView = () => {
     },[]);    
     
     const searchPressed = () => {
-        dispatch(setWeatherError(''));  
-        setSearchElements([...searchElements, search]);
-        dispatch(addCity(search));
-        addCityToLocalStorage(search); 
-        dispatch(getWeatherByCityName(search));
+        let newPlace = search.trim();
+        if(newPlace.length > 0){
+            dispatch(setWeatherError(''));  
+            setSearchElements([...searchElements, newPlace]);
+            dispatch(addCity(newPlace));
+            addCityToLocalStorage(newPlace); 
+            dispatch(getWeatherByCityName(newPlace));
+        }
     };
 
     const addCityToLocalStorage = (city) => {

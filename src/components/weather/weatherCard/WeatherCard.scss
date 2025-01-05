@@ -1,0 +1,10 @@
+.weather-card{
+    padding: 7px;
+
+    &__date,
+    &__temperature,
+    &__description,
+    &__info{
+        margin: 5px;
+    }
+}

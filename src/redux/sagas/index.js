@@ -19,8 +19,7 @@ export function* handleWeather(action) {
                 let res = yield call(getWeatherOneCall, weather.lat, weather.long);
                 weather = {
                     current: weather,
-                    daily: res.daily,
-                    hourly: res.hourly
+                    days: res.days
                 }                
                 break;
         }
